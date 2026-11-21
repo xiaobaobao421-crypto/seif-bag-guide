@@ -3,7 +3,7 @@ import {readFile} from 'node:fs/promises';
 
 const port = Number(process.env.PORT || process.env.GUIDE_PORT || 8765);
 const host = process.env.HOST || (process.env.PORT ? '0.0.0.0' : '127.0.0.1');
-const pageUrl = new URL('./index.html', import.meta.url);
+const pageUrl = new URL('./public/index.html', import.meta.url);
 const deepSeekKey = process.env.DEEPSEEK_API_KEY;
 const GUIDE_MODEL_URL = process.env.GUIDE_MODEL_URL || (deepSeekKey && 'https://api.deepseek.com/chat/completions');
 const GUIDE_MODEL_NAME = process.env.GUIDE_MODEL_NAME || (deepSeekKey && 'deepseek-flash');
@@ -70,7 +70,7 @@ async function handleVision(req,res) {
   }
 }
 
-createServer(async (req,res) => {
+export const server = createServer(async (req,res) => {
   if (req.method === 'GET' && req.url === '/') {
     res.writeHead(200, {'Content-Type':'text/html; charset=utf-8'});
     return res.end(await readFile(pageUrl));
@@ -112,7 +112,9 @@ createServer(async (req,res) => {
   } catch {
     return json(res,502,{error:'Model unavailable'});
   }
-}).listen(port,host,() => console.log('Listening on '+host+':'+port));
+});
+if (!process.env.CLOUDFLARE_WORKER) server.listen(port,host,() => console.log('Listening on '+host+':'+port));
+
 
 
 

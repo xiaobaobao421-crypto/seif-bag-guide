@@ -1,0 +1,8 @@
+{
+  "name": "seif-bag-guide",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-08-04",
+  "assets": { "directory": "./public" },
+  "vars": { "CLOUDFLARE_WORKER": "1" },
+  "workers_dev": true
+}
